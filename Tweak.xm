@@ -4,8 +4,14 @@
 	NSString *processName = [[NSProcessInfo processInfo] processName];
 	if ([processName isEqualToString:@"SpringBoard"]) {
 		if ([LSIManager sharedManager].isRunningInsideSpringBoard) {
-			SBSApplicationShortcutItem *item = [[LSIManager sharedManager] newShortcutItemType:@"test_icon" title:@"Test" subtitle:@"Testing libShortcutItems" iconType:UIApplicationShortcutIconTypeAdd];
+			LSISBSApplicationShortcutItem *item = [[LSIManager sharedManager] newShortcutItemType:@"test_icon" title:@"Test" subtitle:@"Testing libShortcutItems" iconType:UIApplicationShortcutIconTypeAdd];
 		    [[LSIManager sharedManager] addShortcutItems:@[item] toApplicationID:@"com.apple.Preferences"];
+		    LSISBSApplicationShortcutItem *sbItem = [[LSIManager sharedManager] newShortcutItemType:@"test_sb_icon" title:@"Test" subtitle:@"Testing SpringBoard" iconType:UIApplicationShortcutIconTypeAdd];
+		    [sbItem setHandledBySpringBoard:YES];
+		    [[LSIManager sharedManager] addShortcutItems:@[sbItem] toApplicationID:@"com.apple.iBooks"];
+		    [[LSIManager sharedManager] setSBShortcutHandlerBlock:^(LSISBSApplicationShortcutItem *item) {
+		    	NSLog(@"Handled %@ on SpringBoard",item.localizedTitle);
+		    }];
 		}
 	} else if ([processName isEqualToString:@"Preferences"]) {
 		[[LSIManager sharedManager] setShortcutHandlerBlock:^(UIApplicationShortcutItem *item) {
