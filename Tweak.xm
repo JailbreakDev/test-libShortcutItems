@@ -4,22 +4,17 @@
 	NSString *processName = [[NSProcessInfo processInfo] processName];
 	if ([processName isEqualToString:@"SpringBoard"]) {
 		if ([LSIManager sharedManager].isRunningInsideSpringBoard) {
-			LSISBSApplicationShortcutItem *item = [[LSIManager sharedManager] newShortcutItemType:@"test_icon" title:@"Test" subtitle:@"Testing libShortcutItems" iconType:UIApplicationShortcutIconTypeAdd];
-		    [[LSIManager sharedManager] addShortcutItems:@[item] toApplicationID:@"com.apple.Preferences"];
-		    LSISBSApplicationShortcutItem *sbItem = [[LSIManager sharedManager] newShortcutItemType:@"test_sb_icon" title:@"Test" subtitle:@"Testing SpringBoard" iconType:UIApplicationShortcutIconTypeAdd];
-		    [sbItem setHandledBySpringBoard:YES];
-		    [[LSIManager sharedManager] addShortcutItems:@[sbItem] toApplicationID:@"com.apple.iBooks"];
-		    [[LSIManager sharedManager] setSBShortcutHandlerBlock:^(LSISBSApplicationShortcutItem *item) {
-		    	NSLog(@"Handled %@ on SpringBoard",item.localizedTitle);
-		    }];
+			LSIApplicationShortcutItem *testItem = [LSIApplicationShortcutItem newShortcutItemType:@"test_icon" title:@"Test" subtitle:@"Testing libShortcutItems" iconType:UIApplicationShortcutIconTypeAdd];
+			LSIApplicationShortcutItem *test2Item = [LSIApplicationShortcutItem newShortcutItemType:@"test2_icon" title:@"Test2" subtitle:@"Testing again" iconType:UIApplicationShortcutIconTypePlay];
+			LSICallback *callback = [LSICallback callbackWithBlock:^(LSIApplicationShortcutItem *item) {
+				NSLog(@"Handled %@ on SpringBoard",item.localizedTitle);
+			}];
+			[testItem setCallback:callback];
+			[[LSIManager sharedManager] addShortcutItems:@[testItem,test2Item] toApplicationID:@"com.apple.Preferences"];
 		}
 	} else if ([processName isEqualToString:@"Preferences"]) {
-		[[LSIManager sharedManager] setShortcutHandlerBlock:^(UIApplicationShortcutItem *item) {
-			dispatch_async(dispatch_get_main_queue(),^{
-				UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Test" message:@"Worked" preferredStyle:UIAlertControllerStyleAlert];
-			    [alert addAction:[UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:nil]];
-			    [[[UIApplication sharedApplication].keyWindow rootViewController] presentViewController:alert animated:YES completion:nil];
-			});
-		}];
+		[[LSIManager sharedManager] addCallback:[LSICallback callbackWithBlock:^(LSIApplicationShortcutItem *item) {
+			NSLog(@"Handled %@ in Preferences",item.localizedTitle);
+		}]];
 	}
 }
