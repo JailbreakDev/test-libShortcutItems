@@ -9,9 +9,7 @@
 		}
 	} else if ([processName isEqualToString:@"Preferences"]) {
 		[[LSIManager sharedManager] addCallback:[LSICallback callbackWithBlock:^(LSIApplicationShortcutItem *item) {
-			if ([item.type isEqualToString:@"test3_icon"]) {
-				NSLog(@"Handled %@ in Preferences",item.localizedTitle);
-			}
-		}]];
+			NSLog(@"Handled %@ in Preferences",item.localizedTitle);
+		} forIdentifiers:@[@"test3_icon"]]]; //adding forIdentifiers and specifying an array of your identifiers ensures only your items are send to your callback
 	}
 }
