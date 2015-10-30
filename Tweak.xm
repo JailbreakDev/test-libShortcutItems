@@ -8,6 +8,7 @@
 			LSIApplicationShortcutItem *test2Item = [LSIApplicationShortcutItem newShortcutItemType:@"test2_icon" title:@"Test2" subtitle:@"Testing again" iconType:UIApplicationShortcutIconTypePlay];
 			LSICallback *callback = [LSICallback callbackWithBlock:^(LSIApplicationShortcutItem *item) {
 				NSLog(@"Handled %@ on SpringBoard",item.localizedTitle);
+				[[LSIManager sharedManager] removeShortcutItemType:@"test2_icon" fromApplicationID:@"com.apple.Preferences"];
 			}];
 			[testItem setCallback:callback];
 			[[LSIManager sharedManager] addShortcutItems:@[testItem,test2Item] toApplicationID:@"com.apple.Preferences"];
